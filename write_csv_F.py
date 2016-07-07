@@ -35,9 +35,9 @@ def readgbk(filename):
 			tags[SP] = prodnew
 			i=0
 		if "/locus_tag" in line:
-			SP = line[33:40] 	##the locus tag is only 8 characters long
+			SP = line[33:44] 
 		if "/product" in line:
-			prod = line[31:-1]
+			prod = line[31:]
 			i=1
 	return tags
 
@@ -45,13 +45,9 @@ def readgbk(filename):
 def makecsv(tags,otherfilename):
 	writer = csv.writer(open(otherfilename,'w'),lineterminator='\n') ##better output with python3
 	writer.writerow(['Locus Tag','Product'])
-	i=0
+
 	for key, value in tags.items():
 		writer.writerow([str(key),str(value)])
-		if i<10:
-			print(str(key),str(value))
-		i+=1
-
 
 def main():
 	opts, args = options.parse_args()
