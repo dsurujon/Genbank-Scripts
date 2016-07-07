@@ -1,6 +1,8 @@
 ## This program takes an input GBK file and writes an output CSV containing the locus tag 
 ## and gene product for referencing
 
+##Edited: Defne on 7/7/16 - neater output on Python 3 on Windows. 
+
 import os
 import csv 
 from optparse import OptionParser
@@ -28,22 +30,27 @@ def readgbk(filename):
 			prod = prod + line[20:]
 		if i==1 and line[21]== '/':
 			prodnew = prod.replace("\"","")
+			prodnew = prodnew.replace('"',"") ##some annoying characters
+			prodnew=prodnew.replace("\n","")
 			tags[SP] = prodnew
 			i=0
 		if "/locus_tag" in line:
-			SP = line[33:44]
+			SP = line[33:40] 	##the locus tag is only 8 characters long
 		if "/product" in line:
-			prod = line[31:]
+			prod = line[31:-1]
 			i=1
 	return tags
 
 # Print dictionary in two columns of out csv file
 def makecsv(tags,otherfilename):
-	writer = csv.writer(open(otherfilename,'wb'))
-	writer.writerow(["Locus Tag","Product"])
+	writer = csv.writer(open(otherfilename,'w'),lineterminator='\n') ##better output with python3
+	writer.writerow(['Locus Tag','Product'])
+	i=0
 	for key, value in tags.items():
-		writer.writerow([key,value])
-
+		writer.writerow([str(key),str(value)])
+		if i<10:
+			print(str(key),str(value))
+		i+=1
 
 
 def main():
@@ -53,4 +60,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-		
